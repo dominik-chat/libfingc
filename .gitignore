@@ -1,0 +1,11 @@
+# Object files
+*.o
+*.elf
+
+$ Output files
+*.so
+*.a
+
+# Output directories
+build*/
+out*/
