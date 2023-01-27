@@ -56,17 +56,22 @@ size_t strcspn(const char *s1, const char *s2)
 char *strpbrk(const char *s1, const char *s2)
 	__attribute__((nonnull(1, 2))) __attribute__ ((pure));
 
-char *strrchr(const char *s, int c);
+char *strrchr(const char *s, int c)
+	__attribute__((nonnull(1))) __attribute__ ((pure));
 
-size_t strspn(const char *s1, const char *s2);
+size_t strspn(const char *s1, const char *s2)
+	__attribute__((nonnull(1, 2))) __attribute__ ((pure));
 
-char *strstr(const char *s1, const char *s2);
+char *strstr(const char *s1, const char *s2)
+	__attribute__((nonnull(1, 2))) __attribute__ ((pure));
 
-char *strtok(char * restrict s1, const char * restrict s2);
+char *strtok(char * restrict s1, const char * restrict s2)
+	__attribute__((nonnull(2)));
 
-char *strerror(int errnum);
+char *strerror(int errnum)
+	__attribute__ ((pure));
 
-
+/* This will *NOT* be supported - too much complexity */
 int strcoll(const char *s1, const char *s2)
 	__attribute__((error("strcoll is not implemented")));
 size_t strxfrm(char * restrict s1, const char * restrict s2, size_t n)
