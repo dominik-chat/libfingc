@@ -32,7 +32,7 @@ ARFLAGS = crs
 CC = gcc
 AR = ar
 
-all: prepare $(OBJ) $(ASM_OBJ) $(PRJ).a end
+all: prepare $(OBJ) $(ASM_OBJ) $(PRJ).a complete prep-test
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo -e "\e[32mCompiling C object: $<\e[0m"
@@ -51,13 +51,17 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.S
 prepare:
 	@echo -e "\e[33m\e[1mBuilding $(PRJ) module\e[0m"
 
-end:
+complete:
 	@mkdir -p $(OUTPUT_DIR)
 	@cp $(BUILD_DIR)/$(PRJ).a $(OUTPUT_DIR)/$(PRJ).a
-	@cp $(BUILD_DIR)/$(PRJ).a $(TEST_DIR)/$(PRJ).a
 	@cp -r $(BUILD_DIR)/$(ARCH_DIR) $(OUTPUT_DIR)/$(ARCH_DIR)
 	@cp -r $(INC_DIR) $(OUTPUT_DIR)/$(INC_DIR)
 	@echo -e "\e[33m\e[1mModule $(PRJ) built successfully\e[0m"
+
+prep-test:
+	@mkdir -p $(TEST_DIR)/input
+	@cp $(BUILD_DIR)/$(PRJ).a $(TEST_DIR)/input/$(PRJ).a
+	@cp -r $(INC_DIR) $(TEST_DIR)/input/$(INC_DIR)
 
 clean:
 	@rm -rf $(BUILD_DIR) $(OUTPUT_DIR)

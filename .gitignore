@@ -9,3 +9,4 @@ $ Output files
 # Output directories
 build*/
 out*/
+test/input
