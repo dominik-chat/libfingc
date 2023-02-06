@@ -59,9 +59,10 @@ complete:
 	@echo -e "\e[33m\e[1mModule $(PRJ) built successfully\e[0m"
 
 prep-test:
+	@rm -rf $(TEST_DIR)/input
 	@mkdir -p $(TEST_DIR)/input
 	@cp $(BUILD_DIR)/$(PRJ).a $(TEST_DIR)/input/$(PRJ).a
 	@cp -r $(INC_DIR) $(TEST_DIR)/input/$(INC_DIR)
 
 clean:
-	@rm -rf $(BUILD_DIR) $(OUTPUT_DIR)
+	@rm -rf $(BUILD_DIR) $(OUTPUT_DIR) $(TEST_DIR)/input
