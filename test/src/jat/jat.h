@@ -17,6 +17,8 @@ struct jat_test _name[] = {	\
 	JAT_TEST(NULL, NULL)	\
 }
 
+#define JAT_TESTS_DEF(_name) struct jat_test _name[]
+
 #define JAT_ASSERT(_cond)						\
 	jat_report(__FILE__, __LINE__, __FUNCTION__, #_cond, (_cond));	\
 	if ((_cond) == false) __cnt++
@@ -51,9 +53,10 @@ void jat_report(const char *file, const int line, const char *func, const char *
  * Start unit tests specified by pointer.
  *
  * @param tests Pointer unit test structure. Last element contents should be NULL.
+ * @param name Name of the test group. Can be NULL for no name.
  * 
  * @retval Number of failed tests.
  */
-int jat_run(const struct jat_test *tests);
+int jat_run(const struct jat_test *tests, const char *name);
 
 #endif /* _JAT_H_ */

@@ -25,7 +25,7 @@ CFLAGS = \
 	-O2 \
 	-Wall \
 	-Wextra \
-	-c \
+	-c
 
 ARFLAGS = crs
 

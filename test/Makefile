@@ -22,7 +22,7 @@ CFLAGS = \
 	-O2 \
 	-Wall \
 	-Wextra \
-	-c \
+	-c
 
 CC = gcc
 COPY = objcopy
@@ -37,6 +37,7 @@ $(BUILD_DIR)/$(INC_DIR)/%_test.h: $(INPUT_DIR)/$(INC_DIR)/%.h
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo -e "\e[32mCompiling C object: $<\e[0m"
+	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -I./$(BUILD_DIR)/$(INC_DIR) $< -o $@
 
 prepare:
@@ -48,7 +49,7 @@ prepare:
 
 link:
 	@echo -e "\e[35mLinking tester\e[0m"
-	@gcc $(OBJ) $(BUILD_DIR)/$(TEST_LIB).a -o $(BUILD_DIR)/$(PRJ)_test
+	@$(CC) $(OBJ) $(BUILD_DIR)/$(TEST_LIB).a -o $(BUILD_DIR)/$(PRJ)_test
 
 clean:
 	@rm -rf $(BUILD_DIR)

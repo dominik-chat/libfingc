@@ -51,11 +51,16 @@ void jat_report(const char *file, const int line, const char *func, const char *
 	printf_col(COLOR_RED, "Assertion \"%s\" in %s failed at %s:%d\n", cond_str, func, file, line);
 }
 
-int jat_run(const struct jat_test *tests)
+int jat_run(const struct jat_test *tests, const char *name)
 {
 	int tmp;
 	size_t i = 0;
 	int failed = 0;
+
+	if (name == NULL) {
+		name = "";
+	}
+	printf_col(COLOR_WHITE, "Starting test group %s...\n", name);
 
 	if (tests == NULL) {
 		printf_col(COLOR_RED, "Woah, please pass non-NULL pointer pls.\n");
@@ -75,6 +80,12 @@ int jat_run(const struct jat_test *tests)
 		i++;
 	}
 
-	printf("Total tests failed %i\n", failed);
+	if (failed == 0) {
+		printf_col(COLOR_GREEN, "Test group %s completed successfully :)\n", name);
+	} else {
+		printf_col(COLOR_RED, "Test group %s completed unsuccessfully :(\n", name);
+		printf("Total tests failed %i\n", failed);
+	}
+
 	return failed;
 }
