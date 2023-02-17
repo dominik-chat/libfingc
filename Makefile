@@ -19,7 +19,7 @@ OBJ = $(SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 ASM_OBJ = $(ASM_SRC:$(SRC_DIR)/%.S=$(BUILD_DIR)/%.o)
 
 CFLAGS = \
-	-std=gnu99 \
+	-std=c99 \
 	-ffreestanding \
 	-nostdlib \
 	-O2 \
@@ -54,8 +54,8 @@ prepare:
 complete:
 	@mkdir -p $(OUTPUT_DIR)
 	@cp $(BUILD_DIR)/$(PRJ).a $(OUTPUT_DIR)/$(PRJ).a
-	@cp -r $(BUILD_DIR)/$(ARCH_DIR) $(OUTPUT_DIR)/$(ARCH_DIR)
-	@cp -r $(INC_DIR) $(OUTPUT_DIR)/$(INC_DIR)
+	@cp -r $(BUILD_DIR)/$(ARCH_DIR) $(OUTPUT_DIR)/
+	@cp -r $(INC_DIR) $(OUTPUT_DIR)/
 	@echo -e "\e[33m\e[1mModule $(PRJ) built successfully\e[0m"
 
 prep-test:

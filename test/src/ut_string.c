@@ -270,12 +270,25 @@ static int ut_strerr(void)
 {
 	JAT_TEST_BEGINNING;
 
+	char *ret;
+
+	ret = test_strerror(0);
+	JAT_ASSERT(strcmp(ret, "Sorry strerror, not yet supported") == 0);
+
 	JAT_TEST_ENDING;
 }
 
 static int ut_strlen(void)
 {
 	JAT_TEST_BEGINNING;
+
+	char str1[] = "abcdefghijkl";
+	char str2[] = "abcdefg";
+	char str3[] = "";
+
+	JAT_ASSERT(test_strlen(str1) == (sizeof(str1) - 1));
+	JAT_ASSERT(test_strlen(str2) == (sizeof(str2) - 1));
+	JAT_ASSERT(test_strlen(str3) == (sizeof(str3) - 1));
 
 	JAT_TEST_ENDING;
 }
