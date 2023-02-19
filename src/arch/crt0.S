@@ -28,8 +28,8 @@ _start:
 
 	call main # (int argc, char* argv[], char* envp[])
 
-	movslq %edi, %rdi
-	pushq %rdi
+	movslq %eax, %rax
+	pushq %rax
 
 	#call _fini
 
