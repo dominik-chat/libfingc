@@ -19,7 +19,7 @@ OBJ = $(SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 ASM_OBJ = $(ASM_SRC:$(SRC_DIR)/%.S=$(BUILD_DIR)/%.o)
 
 CFLAGS = \
-	-std=c99 \
+	-std=c11 \
 	-ffreestanding \
 	-nostdlib \
 	-O2 \
@@ -37,7 +37,7 @@ all: prepare $(OBJ) $(ASM_OBJ) $(PRJ).a complete prep-test
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo -e "\e[32mCompiling C object: $<\e[0m"
 	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) -I./$(INC_DIR) $< -o $@
+	$(CC) $(CFLAGS) -I./$(INC_DIR) $< -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.S
 	@echo -e "\e[32mCompiling Assembly object: $<\e[0m"

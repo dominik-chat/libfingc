@@ -51,3 +51,23 @@ __libfingc_syscall_4:
 	syscall
 	popq	%rbp
 	ret
+
+.global __libfingc_syscall_5
+__libfingc_syscall_5:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	%rcx, %r10
+	movq	%r9, %rax
+	syscall
+	popq	%rbp
+	ret
+
+.global __libfingc_syscall_6
+__libfingc_syscall_6:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	%rcx, %r10
+	movq	16(%rbp), %rax
+	syscall
+	popq	%rbp
+	ret

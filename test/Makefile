@@ -18,7 +18,7 @@ HEADERS = $(shell find $(INPUT_DIR)/$(INC_DIR) -type f -name '*.h')
 MOD_HEADERS = $(HEADERS:$(INPUT_DIR)/%.h=$(BUILD_DIR)/%_test.h)
 
 CFLAGS = \
-	-std=c99 \
+	-std=c11 \
 	-O2 \
 	-Wall \
 	-Wextra \
