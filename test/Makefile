@@ -26,6 +26,7 @@ CFLAGS = \
 
 CC = gcc
 COPY = objcopy
+AR = ar
 
 all: prepare $(MOD_HEADERS) $(OBJ) link end
 
@@ -44,6 +45,7 @@ prepare:
 	@echo -e "\e[33m\e[1mBuilding $(PRJ) test module\e[0m"
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BUILD_DIR)/$(INC_DIR)
+	@$(AR) dv $(INPUT_DIR)/$(PRJ).a arch_al.o
 	@readelf -sW $(INPUT_DIR)/$(PRJ).a | awk '$$4 == "FUNC"' | awk '{print $$8}' | while read -r line; do echo "$$line test_$$line"; done > $(BUILD_DIR)/symbols.txt
 	@$(COPY) --redefine-syms=$(BUILD_DIR)/symbols.txt $(INPUT_DIR)/$(PRJ).a $(BUILD_DIR)/$(TEST_LIB).a
 

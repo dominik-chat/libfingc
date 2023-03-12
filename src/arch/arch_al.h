@@ -7,6 +7,7 @@
 #ifndef _LIBFINGC_ARCH_AL_H_
 #define _LIBFINGC_ARCH_AL_H_
 
+#include <stddef.h>
 #include <stdint.h>
 
 /**

@@ -15,7 +15,7 @@
 
 #define MAP_ANONYMOUS	0x20
 
-extern const uintptr_t __libfingc_heap_start;
+extern uintptr_t __libfingc_heap_start;
 extern uintptr_t __libfingc_heap_end;
 
 void *__libfingc_arch_al_mmap(size_t size)
@@ -66,9 +66,7 @@ int __libfingc_arch_al_sbrk(intptr_t offset)
 
 int __libfingc_arch_al_init_heap(void)
 {
-	uintptr_t *tmp = (uintptr_t *)&__libfingc_heap_start;
-
-	*tmp = (uintptr_t)__brk(0);
+	__libfingc_heap_start = (uintptr_t)__brk(0);
 	if (__libfingc_heap_start == 0) {
 		return -1;
 	}
