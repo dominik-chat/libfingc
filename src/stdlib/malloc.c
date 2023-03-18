@@ -174,17 +174,34 @@ static void small_dealloc(void *ptr)
 	/* TODO: Should brk be moved if there is free space ? */
 }
 
+static size_t big_check_size(void *ptr)
+{
+	struct big_block *block = big_blocks;
+
+	if (block == NULL) {
+		return 0;
+	}
+
+	while (block->data != ptr) {
+		block = block->next;
+		if (block == NULL) {
+			return 0;
+		}
+	}
+
+	return block->size;
+}
+
 static void *big_alloc(size_t size)
 {
 	struct big_block *block;
-	struct big_block *tmp;
 
 	block = malloc(sizeof(*block));
 	if (block == NULL) {
 		return NULL;
 	}
 
-	block->next = NULL;
+	block->next = big_blocks;
 	block->size = size;
 	block->data = __libfingc_arch_al_mmap(size);
 
@@ -193,15 +210,7 @@ static void *big_alloc(size_t size)
 		return NULL;
 	}
 
-	if (big_blocks == NULL) {
-		big_blocks = block;
-	} else {
-		tmp = big_blocks;
-		while (tmp->next != NULL) {
-			tmp = tmp->next;
-		}
-		tmp->next = block;
-	}
+	big_blocks = block;
 
 	return block->data;
 }
@@ -239,12 +248,17 @@ void big_dealloc(void *ptr)
 
 void *aligned_alloc(size_t alignment, size_t size)
 {
-	/* TODO: Check if alignment is multiple of 2 */
+	/* Alignment different than power of 2 is not supported */
+	if ((alignment & (alignment - 1)) != 0) {
+		return NULL;
+	}
 
 	if (alignment < alignof(max_align_t)) {
 		return malloc(size);
+	} else if (alignment <= __LIBFINGC_ARCH_AL_PAGE_SIZE) {
+		/* TODO: Smart (wasteless) aligned allocation */
+		return big_alloc(size);
 	} else {
-		/* TODO: some block alignment mechanism */
 		return NULL;
 	}
 }
@@ -284,5 +298,34 @@ void *malloc(size_t size)
 
 void *realloc(void *ptr, size_t size)
 {
+	void *tmp;
+	size_t old_size;
 
+	if (ptr == NULL) {
+		return malloc(size);
+	}
+
+	/* TODO: This could use some optimization */
+
+	if (!(((uintptr_t)ptr > __libfingc_heap_start) && ((uintptr_t)ptr < __libfingc_heap_end)) &&
+		(size >= BIG_ALLOC_SIZE)) {
+		old_size = big_check_size(ptr);
+		if (old_size == 0) {
+			return NULL;
+		}
+
+		tmp = __libfingc_arch_al_mremap(ptr, old_size, size);
+		if (tmp == (void *)-1) {
+			return NULL;
+		}
+	} else {
+		tmp = malloc(size);
+		if (tmp == NULL) {
+			return NULL;
+		}
+		memcpy(tmp, ptr, size);
+	}
+
+	free(ptr);
+	return tmp;
 }

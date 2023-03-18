@@ -10,6 +10,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define __LIBFINGC_ARCH_AL_PAGE_SIZE 4096
+
 /**
  * @brief Mmap like function.
  *

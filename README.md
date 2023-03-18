@@ -9,7 +9,10 @@ The goal of this project is to provide simple, yet functional libc.
 
 ## Porting
 
-To work on different OSes the library requires a porting layer with appropriate syscalls (WIP).
+To work on different OSes the library requires a porting layer with appropriate syscalls.
+The porting layer is defined in the `arch` directory.
+Currently the file to port functionality is `arch_al.c` and may be accompanied by the syscall or HAL files.
+The file `crt0.S` should also be ported as initialization code.
 
 ## Compilation
 
