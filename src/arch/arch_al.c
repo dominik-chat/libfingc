@@ -8,12 +8,15 @@
 #include "syscall.h"
 #include "arch_al.h"
 
-#define PROT_READ	0x1
-#define PROT_WRITE	0x2
+#define PAGE_SIZE	4096
+
+#define PROT_READ	0x01
+#define PROT_WRITE	0x02
 
 #define MAP_PRIVATE	0x02
-
 #define MAP_ANONYMOUS	0x20
+
+#define MREMAP_MAYMOVE	0x01
 
 extern uintptr_t __libfingc_heap_start;
 extern uintptr_t __libfingc_heap_end;
@@ -21,7 +24,7 @@ extern uintptr_t __libfingc_heap_end;
 void *__libfingc_arch_al_mmap(size_t size)
 {
 	if (size == 0) {
-		return NULL;
+		return (void *)-1;
 	}
 
 	return __mmap(NULL, size, (PROT_READ | PROT_WRITE), (MAP_PRIVATE | MAP_ANONYMOUS), -1, 0);
@@ -34,6 +37,19 @@ int __libfingc_arch_al_munmap(void *addr, size_t size)
 	}
 
 	return __munmap(addr, size);
+}
+
+void *__libfingc_arch_al_mremap(void *old_address, size_t old_size, size_t new_size)
+{
+	if ((old_address == NULL) || (old_size == 0) || (new_size == 0)) {
+		return (void *)-1;
+	}
+
+	if (((uintptr_t)old_address && (PAGE_SIZE - 1)) != 0) {
+		return (void *)-1;
+	}
+
+	return __mremap(old_address, old_size, new_size, MREMAP_MAYMOVE, NULL);
 }
 
 int __libfingc_arch_al_sbrk(intptr_t offset)

@@ -54,4 +54,17 @@ static inline void *__brk(unsigned long addr)
 	return (void *)__libfingc_syscall_1(__addr, 12);
 }
 
+static inline void *__mremap(void *old_address, size_t old_size, size_t new_size,
+			     int flags, void *new_address)
+{
+	uint64_t __old_address = (uint64_t)old_address;
+	uint64_t __old_size = (uint64_t)old_size;
+	uint64_t __new_size = (uint64_t)new_size;
+	uint64_t __flags = (uint64_t)flags;
+	uint64_t __new_address = (uint64_t)new_address;
+
+	return (void *)__libfingc_syscall_5(__old_address, __old_size, __new_size,
+					    __flags, __new_address, 25);
+}
+
 #endif /* _LIBFINGC_SYSCALL_H_ */

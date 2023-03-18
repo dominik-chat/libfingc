@@ -38,6 +38,22 @@ void *__libfingc_arch_al_mmap(size_t size);
 int __libfingc_arch_al_munmap(void *addr, size_t size);
 
 /**
+ * @brief Mremap like function.
+ *
+ * This function should behave similar to linux mremap.
+ * This function should remap a memory block to a new specified size.
+ * If any of the size is zero or address is NULL the function will fail.
+ * The address should be page-aligned. 
+ *
+ * @param old_size Original size of block to remap.
+ * @param new_size Requested size of block to remap.
+ *
+ * @retval Pointer to remapped block on success.
+ * @retval (void *)-1 on error
+ */
+void *__libfingc_arch_al_mremap(void *old_address, size_t old_size, size_t new_size);
+
+/**
  * @brief Sbrk like function.
  *
  * This function should behave similar to linux sbrk.

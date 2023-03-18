@@ -32,12 +32,13 @@ struct small_header {
 	max_align_t mem[];
 };
 
-static size_t check_size(void *addr)
-{
-	struct small_header *block = (struct small_header *)addr;
+struct big_block {
+	struct big_block *next;
+	size_t size;
+	void *data;
+};
 
-	return block->size;
-}
+static struct big_block *big_blocks = NULL;
 
 static void *small_create_block(void *addr, struct small_header *prev, size_t size)
 {
@@ -170,6 +171,70 @@ static void small_dealloc(void *ptr)
 
 	block = (struct small_header *)(((char *)ptr)-HEADER_SIZE);
 	small_merge_block(block);
+	/* TODO: Should brk be moved if there is free space ? */
+}
+
+static void *big_alloc(size_t size)
+{
+	struct big_block *block;
+	struct big_block *tmp;
+
+	block = malloc(sizeof(*block));
+	if (block == NULL) {
+		return NULL;
+	}
+
+	block->next = NULL;
+	block->size = size;
+	block->data = __libfingc_arch_al_mmap(size);
+
+	if (block->data == (void *)-1) {
+		free(block);
+		return NULL;
+	}
+
+	if (big_blocks == NULL) {
+		big_blocks = block;
+	} else {
+		tmp = big_blocks;
+		while (tmp->next != NULL) {
+			tmp = tmp->next;
+		}
+		tmp->next = block;
+	}
+
+	return block->data;
+}
+
+void big_dealloc(void *ptr)
+{
+	struct big_block *block = big_blocks;
+	struct big_block *prev = NULL;
+	int ret;
+
+	if (block == NULL) {
+		return;
+	}
+
+	while (block->data != ptr) {
+		prev = block;
+		block = block->next;
+		if (block == NULL) {
+			return;
+		}
+	}
+
+	ret = __libfingc_arch_al_munmap(block->data, block->size);
+	/* FIXME: Use this return value */
+	(void)ret;
+
+	if (prev == NULL) {
+		big_blocks = block->next;
+	} else {
+		prev->next = block->next;
+	}
+
+	free(block);
 }
 
 void *aligned_alloc(size_t alignment, size_t size)
@@ -199,27 +264,25 @@ void *calloc(size_t nmemb, size_t size)
 
 void free(void *ptr)
 {
-	small_dealloc(ptr);
+	if (((uintptr_t)ptr > __libfingc_heap_start) && ((uintptr_t)ptr < __libfingc_heap_end)) {
+		small_dealloc(ptr);
+	} else {
+		big_dealloc(ptr);
+	}
 }
 
 void *malloc(size_t size)
 {
 	if (size == 0) {
 		return NULL;
-	} else //if (size >= BIG_ALLOC_SIZE) {
-	//	return big_alloc(size);
-	//} else {
+	} else if (size >= BIG_ALLOC_SIZE) {
+		return big_alloc(size);
+	} else {
 		return small_alloc(size);
-	//}
+	}
 }
 
 void *realloc(void *ptr, size_t size)
 {
-	size_t tmp;
 
-	(void)size;
-	tmp = check_size(ptr);
-	(void)tmp;
-
-	return NULL;
 }
